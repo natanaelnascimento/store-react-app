@@ -40,6 +40,7 @@ export default function Login() {
       return;
     }
     setUserName(data.userName);
+    window.location.pathname = '/panel';
   }
 
   return (
@@ -48,7 +49,7 @@ export default function Login() {
         <div>
           <div className='row'>
               <div className='col s10 m6 l4 offset-s1 offset-m3 offset-l4'>
-                  <input className={usernameClass} placeholder='Usuário' id='username' type='text' value={username} onChange={handleUsernameChange} />
+                  <input className={usernameClass} placeholder='Login' id='username' type='text' value={username} onChange={handleUsernameChange} />
               </div>
           </div>
           <div className='row'>

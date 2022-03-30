@@ -1,36 +1,57 @@
 import React, { useEffect, useState } from 'react';
 import Navigation from './Navigation';
-import ClientService from '../services/ClientService';
+import UserService from '../services/UserService';
 import { trackPromise } from 'react-promise-tracker';
 import alertManager from '../helpers/alertManager';
-import CurrencyInput from 'react-currency-input-field';
 
-const currencyFormat = new Intl.NumberFormat('pt-BR', { style: "currency", currency: "BRL" });
-
-export default function Clients() {
+export default function Users() {
 
   const [items, setItems] = useState([]);
   const [viewType, setViewType] = useState([]);
   const [current, setCurrent] = useState([]);
   const [id, setId] = useState([]);
   const [name, setName] = useState([]);
-  const [address, setAddress] = useState([]);
-  const [creditLimit, setCreditLimit] = useState([]);
-  const [installmentsLimit, setInstallmentsLimit] = useState([]);
+  const [username, setUsername] = useState([]);
+  const [password, setPassword] = useState([]);
+  const [passwordConfirmation, setPasswordConfirmation] = useState([]);
   const [nameClass, setNameClass] = useState([]);
-  const [addressClass, setAddressClass] = useState([]);
-  const [creditLimitClass, setCreditLimitClass] = useState([]);
-  const [installmentsLimitClass, setInstallmentsLimitClass] = useState([]);
+  const [usernameClass, setUsernameClass] = useState([]);
+  const [passwordClass, setPasswordClass] = useState([]);
+  const [passwordConfirmationClass, setPasswordConfirmationClass] = useState([]);
 
   useEffect(() => {
     setViewType('list');
     const fecth = async () => {
-      let data = await trackPromise(ClientService.findAll());
+      let data = await trackPromise(UserService.findAll());
       alertManager.handleData(data);
       setItems(data);
     }
     fecth();
   }, []);
+
+  const validateUsername = () => {
+    if(!/^[a-zA-z\d_]+$/.test(username)) {
+      alertManager.showAlert('Utilize apenas letras, números e _ no login');
+      setUsernameClass('invalid');
+      return false;
+    }
+    return true;
+  }
+
+  const validatePasswords = () => {
+    if(password.length < 8) {
+      alertManager.showAlert('As senha deve posssuir pelo menos 8 caracteres');
+      setPasswordClass('invalid');
+      setPasswordConfirmationClass('invalid');
+      return false;
+    } else if(password !== passwordConfirmation) {
+      alertManager.showAlert('As senhas digitadas não estão iguais');
+      setPasswordClass('invalid');
+      setPasswordConfirmationClass('invalid');
+      return false;
+    }
+    return true;
+  }
 
   const handleIdChange = (props) => {
     setId(props.target.value);
@@ -40,23 +61,23 @@ export default function Clients() {
     setName(props.target.value);
   }
 
-  const handleAddressChange = (props) => {
-    setAddress(props.target.value);
+  const handleUsernameChange = (props) => {
+    setUsername(props.target.value);
   }
 
-  const handleCreditLimitChange = (value) => {
-    setCreditLimit(value);
+  const handlePasswordChange = (props) => {
+    setPassword(props.target.value);
   }
 
-  const handleInstallmentsLimitChange = (props) => {
-    setInstallmentsLimit(props.target.value);
+  const handlePasswordConfirmationChange = (props) => {
+    setPasswordConfirmation(props.target.value);
   }
 
   const handleSearchButtonClick = async () => {
     let nameSearch = name.length > 0 ? name : null;
     let data = id.length > 0
-      ? await trackPromise(ClientService.findById(id))
-      : await trackPromise(ClientService.findAll(nameSearch));
+      ? await trackPromise(UserService.findById(id))
+      : await trackPromise(UserService.findAll(nameSearch));
     alertManager.handleData(data);
     if(id.length > 0 && !data.error)
       data = {totalElements: 1, content: [data]}
@@ -66,9 +87,9 @@ export default function Clients() {
   const handleCreationButtonClick = () => {
     setName('');
     setId('');
-    setAddress('');
-    setCreditLimit('');
-    setInstallmentsLimit('');
+    setUsername('');
+    setPassword('');
+    setPasswordConfirmation('');
     setCurrent(null);
     setViewType('creation');
   }
@@ -76,34 +97,43 @@ export default function Clients() {
   const handleCancelButtonClick = () => {
     setName('');
     setId('');
-    setAddress('');
-    setCreditLimit('');
-    setInstallmentsLimit('');
+    setUsername('');
+    setPassword('');
+    setPasswordConfirmation('');
     setNameClass('');
-    setAddressClass('');
-    setCreditLimitClass('');
-    setInstallmentsLimitClass('');
+    setUsernameClass('');
+    setPasswordClass('');
+    setPasswordConfirmationClass('');
     setCurrent(null);
     setViewType('list');
   }
 
   const handleCreationConffirmButtonClick = async () => {
     setNameClass(name.length === 0 ? 'invalid' : 'valid');
-    setCreditLimitClass(creditLimit.length === 0 ? 'invalid' : 'valid');
-    setInstallmentsLimitClass(installmentsLimit.length === 0 ? 'invalid' : 'valid');
-    setAddressClass(address.length === 0 ? 'invalid' : 'valid');
-    if(name.length === 0 || creditLimit.length === 0 || address.length === 0) {
+    setPasswordClass(password.length === 0 ? 'invalid' : 'valid');
+    setPasswordConfirmationClass(passwordConfirmation.length === 0 ? 'invalid' : 'valid');
+    setUsernameClass(username.length === 0 ? 'invalid' : 'valid');
+    if(name.length === 0 || password.length === 0 || passwordConfirmation.length === 0 || username.length === 0) {
       alertManager.showAlert('Preencha os campos obrigatórios!');
       return;
     }
-    let creditLimitValue = creditLimit.replace(',', '.');
-    let client = {name, address, installmentsLimit, creditLimit : creditLimitValue};
-    let data = await trackPromise(ClientService.create(client));
-    alertManager.handleData(data);
-    if(!data.error)
-      alertManager.showAlert('Cliente cadastrado com sucesso!');
-   
-    data = await trackPromise(ClientService.findAll());
+    if(!validateUsername())
+      return;
+    if(!validatePasswords())
+      return;
+    let user = {name, username, password};
+    let data = await trackPromise(UserService.create(user));
+    if(data.error && data.error === 'integrity_violation') {
+      alertManager.showAlert('O login digitado já está sendo utilizado');
+      setUsernameClass('invalid');
+      return;
+    } if(!data.error) {
+      alertManager.showAlert('Usuário cadastrado com sucesso!');
+    } else {
+      alertManager.handleData(data);
+    }
+
+    data = await trackPromise(UserService.findAll());
     alertManager.handleData(data);
     setItems(data);
 
@@ -112,37 +142,41 @@ export default function Clients() {
 
   const handleUpdateButtonClick = async (props) => {
     let id = props.target.id.split('-')[1];
-    let data = await trackPromise(ClientService.findById(id));
+    let data = await trackPromise(UserService.findById(id));
     alertManager.handleData(data);
     if(data.error)
       return;
     setName(data.name);
     setId(data.id);
-    setAddress(data.address);
-    setCreditLimit(data.creditLimit  + '');
-    setInstallmentsLimit(data.installmentsLimit);
+    setUsername(data.username);
     setCurrent(data);
     setViewType('update');
   }
 
   const handleUpdateConffirmButtonClick = async () => {
     setNameClass(name.length === 0 ? 'invalid' : 'valid');
-    setCreditLimitClass(creditLimit.length === 0 ? 'invalid' : 'valid');
-    setInstallmentsLimitClass(installmentsLimit.length === 0 ? 'invalid' : 'valid');
-    setAddressClass(address.length === 0 ? 'invalid' : 'valid');
-    if(name.length === 0 || creditLimit.length === 0 || address.length === 0) {
+    setUsernameClass(username.length === 0 ? 'invalid' : 'valid');
+    if(!validateUsername())
+      return;
+    if(name.length === 0 || username.length === 0) {
       alertManager.showAlert('Preencha os campos obrigatórios!');
       return;
     }
 
-    let creditLimitValue = creditLimit.replace(',', '.');
-    let client = {name, address, installmentsLimit, creditLimit : creditLimitValue, id : current.id};
-    let data = await trackPromise(ClientService.update(client));
+    let user = {name, username, id : current.id};
+    let data = await trackPromise(UserService.update(user));
     alertManager.handleData(data);
-    if(!data.error)
-      alertManager.showAlert('Cliente alterado com sucesso!');
+    if(data.error && data.error === 'integrity_violation') {
+      alertManager.showAlert('O login digitado já está sendo utilizado');
+      setUsernameClass('invalid');
+      return;
+    } if(!data.error) {
+      alertManager.showAlert('Usuário alterado com sucesso!');
+    } else {
+      alertManager.handleData(data);
+    }
    
-    data = await trackPromise(ClientService.findAll());
+    data = await trackPromise(UserService.findAll());
     alertManager.handleData(data);
     setItems(data);
 
@@ -151,26 +185,24 @@ export default function Clients() {
 
   const handleDeleteButtonClick = async (props) => {
     let id = props.target.id.split('-')[1];
-    let data = await trackPromise(ClientService.findById(id));
+    let data = await trackPromise(UserService.findById(id));
     alertManager.handleData(data);
     if(data.error)
       return;
     setName(data.name);
     setId(data.id);
-    setAddress(data.address);
-    setCreditLimit(data.creditLimit + '');
-    setInstallmentsLimit(data.installmentsLimit);
+    setUsername(data.username);
     setCurrent(data);
     setViewType('delete');
   }
 
   const handleDeleteConffirmButtonClick = async () => {
-    let data = await trackPromise(ClientService.remove(current.id));
+    let data = await trackPromise(UserService.remove(current.id));
     alertManager.handleData(data);
     if(!data.error)
-      alertManager.showAlert('Cliente excluído com sucesso!');
+      alertManager.showAlert('Usuário excluído com sucesso!');
    
-    data = await trackPromise(ClientService.findAll());
+    data = await trackPromise(UserService.findAll());
     alertManager.handleData(data);
     setItems(data);
 
@@ -179,28 +211,26 @@ export default function Clients() {
 
   const handleDetailButtonClick = async (props) => {
     let id = props.target.id.split('-')[1];
-    let data = await trackPromise(ClientService.findById(id));
+    let data = await trackPromise(UserService.findById(id));
     alertManager.handleData(data);
     if(data.error)
       return;
     setName(data.name);
     setId(data.id);
-    setAddress(data.address);
-    setCreditLimit(data.creditLimit + '');
-    setInstallmentsLimit(data.installmentsLimit);
+    setUsername(data.username);
     setCurrent(data);
     setViewType('detail');
   }
 
   let title = viewType === 'update'
-    ? `Alterar Cliente #${current && current.id}`
+    ? `Alterar Usuário #${current && current.id}`
     : viewType === 'delete'
-    ? `Excluir Cliente #${current && current.id}`
+    ? `Excluir Usuário #${current && current.id}`
     : viewType === 'detail'
-    ? `Detalhar Cliente #${current && current.id}`
+    ? `Detalhar Usuário #${current && current.id}`
     : viewType === 'creation'
-    ? 'Cadastrar Cliente'
-    : 'Clientes';
+    ? 'Cadastrar Usuário'
+    : 'Usuários';
 
   return (
     <Navigation title={title}>
@@ -220,21 +250,21 @@ export default function Clients() {
                 <tr>
                   <th>#ID</th>
                   <th>Nome</th>
-                  <th>Limite de Crédito</th>
+                  <th>Login</th>
                 </tr>
               </thead>
               <tbody>
               {items && items.totalElements > 0 &&
-                items.content.map((client) => (
-                  <tr key={client.id}>
-                    <td>{client.id}</td>
-                    <td>{client.name}</td>
-                    <td>{currencyFormat.format(client.creditLimit)}</td>
+                items.content.map((user) => (
+                  <tr key={user.id}>
+                    <td>{user.id}</td>
+                    <td>{user.name}</td>
+                    <td>{user.username}</td>
                     <td/>
                     <td>
-                      <a href='#!' id={'aclient-' + client.id} onClick={handleDeleteButtonClick} className='secondary-content'><i id={'iclient-' + client.id} style={STYLES.action} className='material-icons'>delete</i></a>
-                      <a href='#!' id={'aclient-' + client.id} onClick={handleUpdateButtonClick} className='secondary-content'><i id={'iclient-' + client.id} style={STYLES.action} className='material-icons'>edit</i></a>
-                      <a href='#!' id={'aclient-' + client.id} onClick={handleDetailButtonClick} className='secondary-content'><i id={'iclient-' + client.id} style={STYLES.action} className='material-icons'>description</i></a>
+                      <a href='#!' id={'auser-' + user.id} onClick={handleDeleteButtonClick} className='secondary-content'><i id={'iuser-' + user.id} style={STYLES.action} className='material-icons'>delete</i></a>
+                      <a href='#!' id={'auser-' + user.id} onClick={handleUpdateButtonClick} className='secondary-content'><i id={'iuser-' + user.id} style={STYLES.action} className='material-icons'>edit</i></a>
+                      <a href='#!' id={'auser-' + user.id} onClick={handleDetailButtonClick} className='secondary-content'><i id={'iuser-' + user.id} style={STYLES.action} className='material-icons'>description</i></a>
                     </td>
                   </tr>
                 ))}
@@ -249,17 +279,21 @@ export default function Clients() {
                   <label className='active' htmlFor="name">Nome</label>
                 </div>
                 <div className='input-field col s12 m12 l3 xl3'>
-                  <CurrencyInput prefix='R$ ' style={STYLES.input} className={creditLimitClass} placeholder='Limite de Crédito' id='creditLimit' value={creditLimit} fixedDecimalLength='2' onValueChange={handleCreditLimitChange} readOnly={['detail', 'delete'].includes(viewType)} />
-                  <label className='active' htmlFor="creditLimit">Limite de Crédito</label>
+                <input style={STYLES.input} className={usernameClass} placeholder='Login' id='username' type='text' value={username} onChange={handleUsernameChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <label className='active' htmlFor="unsername">Login</label>
                 </div>
-                <div className='input-field col s12 m12 l8 xl8'>
-                  <input style={STYLES.input} className={addressClass} placeholder='Endereço' id='address' type='text' value={address} onChange={handleAddressChange} readOnly={['detail', 'delete'].includes(viewType)} />
-                  <label className='active' htmlFor="addresss">Endereço</label>
-                </div>
-                <div className='input-field col s12 m12 l3 xl3'>
-                  <input style={STYLES.input} className={installmentsLimitClass} placeholder='Limite de Parcelas' id='installmentsLimit' type='number' min='1' value={installmentsLimit} onChange={handleInstallmentsLimitChange} readOnly={['detail', 'delete'].includes(viewType)} />
-                  <label className='active' htmlFor="installmentsLimit">Limite de Parcelas</label>
-                </div>
+                {viewType === 'creation' &&
+                <>
+                  <div className='input-field col s12 m12 l6 xl6'>
+                    <input style={STYLES.input} className={passwordClass} placeholder='Senha' id='password' type='password' value={password} onChange={handlePasswordChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                    <label className='active' htmlFor="password">Senha</label>
+                  </div>
+                  <div className='input-field col s12 m12 l5 xl5'>
+                    <input style={STYLES.input} className={passwordConfirmationClass} placeholder='Confirmação da Senha' id='passwordConfirmation' type='password' value={passwordConfirmation} onChange={handlePasswordConfirmationChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                    <label className='active' htmlFor="passwordConfirmation">Confirmação da Senha</label>
+                  </div>
+                </>
+                }
               </div>
               <div>
                 <button style={STYLES.input} onClick={handleCancelButtonClick} className='center btn waves-effect waves-light'><i className="material-icons left">arrow_back</i>{viewType === 'detail' ? 'Voltar' : 'Cancelar'}</button>

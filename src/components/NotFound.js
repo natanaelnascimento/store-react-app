@@ -5,9 +5,12 @@ export default function NotFound() {
 
   return (
     <Navigation title={`Conteúdo não encontrado!`}>
-      <div className='section'>
-        <div className='center'>
-          <i style={STYLES.icon} className='material-icons'>flag</i>
+      <div className='container center'>
+        <div className='sectiion'>
+          <i style={STYLES.icon} className="large center material-icons">equalizer</i>
+        </div>
+        <div className='sectiion'>
+          <span>Nenhuma página disponível para esse endereço</span>
         </div>
       </div>
     </Navigation>

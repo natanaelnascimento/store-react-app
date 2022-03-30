@@ -50,11 +50,16 @@ const GENERIC_ERROR = {
     message: 'Erro ao realizar a operação'
 }
 
+const NETWORK_ERROR = {
+    error: 'generic',
+    message: 'Erro ao realizar conexão com o servidor'
+}
+
 const getErrorInfo = (response) => {
     let errorInfo = ERRORS.find(e => e.error === response.data.error);
     return errorInfo ? errorInfo : GENERIC_ERROR;
 }
 
-const module = { getErrorInfo };
+const module = { getErrorInfo, GENERIC_ERROR, NETWORK_ERROR };
 
 export default module;

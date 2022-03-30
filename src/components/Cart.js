@@ -43,6 +43,8 @@ export default function Cart() {
 
   useEffect(() => {
     const fecth = async () => {
+      if(!installments || installments.length === 0)
+        return;
       let data = await trackPromise(CartManager.getResume(installments));
       alertManager.handleData(data);
       setResume(data);

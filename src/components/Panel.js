@@ -24,13 +24,13 @@ export default function Panel() {
 
   return (
     <Navigation title={`Bem-vindo, ${userName}`}>
-          {(!items || !items.totalElements || items.totalElements === 0) &&
+        {(!items || !items.totalElements || items.totalElements === 0) &&
           <div className='container center'>
             <div className='sectiion'>
               <i style={STYLES.icon} className="large center material-icons">equalizer</i>
             </div>
             <div className='sectiion'>
-              <span>Nenhum pedido realzizado</span>
+              <span>Nenhum pedido realizado</span>
             </div>
           </div>
         }

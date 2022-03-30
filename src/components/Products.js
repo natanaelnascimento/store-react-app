@@ -205,7 +205,7 @@ export default function Products() {
     ? `Excluir Produto #${current && current.id}`
     : viewType === 'detail'
     ? `Detalhar Produto #${current && current.id}`
-    : viewType === 'create'
+    : viewType === 'creation'
     ? 'Cadastrar Produto'
     : 'Produtos';
 

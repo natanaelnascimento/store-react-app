@@ -1,7 +1,7 @@
 import M from 'materialize-css';
 import React, { useContext, useEffect } from 'react';
 import { trackPromise, usePromiseTracker } from 'react-promise-tracker';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { PageContext } from '../helpers/pageContext';
 import AuthenticationService from '../services/AuthenticationService';
 
@@ -18,6 +18,9 @@ export default function Navigation({title, sidebar = true, ...props}) {
     const handleLogoutClick = async () => {
         await trackPromise(AuthenticationService.logout());
         setSessionId('');
+        return (
+            <Navigate to='/'/>
+        );
     }
 
     let colClassName = userName && sidebar ? 'col s12 m12 l8 offset-l4 xl9 offset-xl3' : '';
@@ -30,7 +33,7 @@ export default function Navigation({title, sidebar = true, ...props}) {
                     <div className='row'>
                         <div className={colClassName}>
                             <div className='nav-wrapper'>
-                                <Link to='/' className='brand-logo'>Store App</Link>
+                                <span className='brand-logo'>Store App</span>
                             </div>
                         </div>
                         {userName &&
@@ -54,10 +57,12 @@ export default function Navigation({title, sidebar = true, ...props}) {
                             </div>
                         </li>
                         <li><div className='divider'></div></li>
-                        <li><Link to='/'><i className='material-icons'>equalizer</i>Painel</Link></li>
+                        <li><Link to='/panel'><i className='material-icons'>equalizer</i>Painel</Link></li>
                         <li><Link to='/products'><i className='material-icons'>local_mall</i>Produtos</Link></li>
                         <li><Link to='/clients'><i className='material-icons'>face</i>Clientes</Link></li>
                         <li><Link to='/cart'><i className='material-icons'>shopping_cart</i>Carrinho</Link></li>
+                        <li><div className='divider'></div></li>
+                        <li><Link to='/users'><i className='material-icons'>people</i>Usuários</Link></li>
                         <li><div className='divider'></div></li>
                         <li><a href='#!' onClick={handleLogoutClick}><i className='material-icons'>exit_to_app</i>Logout</a></li>
                     </ul>

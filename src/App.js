@@ -6,27 +6,31 @@ import Login from './components/Login';
 import NotFound from './components/NotFound';
 import Panel from './components/Panel';
 import Products from './components/Products';
+import Users from './components/Users';
 import { PageContext } from './helpers/pageContext';
 import AuthenticationService from './services/AuthenticationService';
 
 export default function App() {
-  const [userName, setUserName] = useState(['']);
+
+  const [userName, setUserName] = useState([]);
 
   useEffect(() => {
     let auth = AuthenticationService.getAuth();
-    setUserName(auth ? auth.userName : '');
+    setUserName(auth.userName ? auth.userName : null);
   },[userName]);
 
   return (
     <PageContext.Provider value={[userName, setUserName]}>
-        {!userName && window.location.pathname !== '/' && window.location.pathname !== '' &&
-          <Navigate to='/'/>
+        {userName && userName.length > 0 && (window.location.pathname === '/' || window.location.pathname === '') &&
+          <Navigate to='/panel'/>
         }
         <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/panel" element={<Panel />} />
           <Route path="/products" element={<Products />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/" element={userName ? <Panel /> : <Login />} />
+          <Route path="/users" element={<Users />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>
     </PageContext.Provider>
