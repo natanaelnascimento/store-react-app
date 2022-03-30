@@ -1,4 +1,5 @@
-import { decodeToken , isExpired} from "react-jwt";
+import { isExpired} from "react-jwt";
+import jwtDecode from 'jwt-decode';
 
 const setAccessToken = (accessToken) => {
     window.sessionStorage.setItem('access-token', accessToken);
@@ -32,11 +33,15 @@ const cleanTokens = () => {
 }
 
 const getAuth = (data) => {
-    let accessToken = data ? data.accessToken : getAccessToken();
-    let refreshToken = data ? data.refreshToken : getRefreshToken();
-    setAccessToken(accessToken);
-    setRefreshToken(refreshToken);
-    return {...decodeToken(accessToken), accessToken, refreshToken};
+    try {
+        let accessToken = data ? data.accessToken : getAccessToken();
+        let refreshToken = data ? data.refreshToken : getRefreshToken();
+        setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
+        return {...jwtDecode(accessToken), accessToken, refreshToken};
+    } catch (error) {
+        return {};
+    }
 }
 
 const module = { setAccessToken, getAccessToken, setRefreshToken, getRefreshToken,

@@ -17,13 +17,13 @@ export default function App() {
   useEffect(() => {
     let auth = AuthenticationService.getAuth();
     setUserName(auth.userName ? auth.userName : null);
+    if(userName && userName.length > 0 && (window.location.pathname === '/' || window.location.pathname === ''))
+      window.location.pathname = '/panel';
   },[userName]);
 
   return (
     <PageContext.Provider value={[userName, setUserName]}>
-        {userName && userName.length > 0 && (window.location.pathname === '/' || window.location.pathname === '') &&
-          <Navigate to='/panel'/>
-        }
+        
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/panel" element={<Panel />} />
