@@ -11,9 +11,11 @@ export default function Navigation({title, sidebar = true, ...props}) {
     const [userName, setUsername] = useContext(PageContext);
 
     useEffect(() => {
-        let elems = document.querySelectorAll('.sidenav');
-        M.Sidenav.init(elems);
-    }, []);
+        if(sidebar) {
+            let elems = document.querySelectorAll('.sidenav');
+            M.Sidenav.init(elems);
+        }
+    }, [sidebar]);
 
     const handleLogoutClick = async () => {
         await trackPromise(AuthenticationService.logout());
@@ -24,19 +26,18 @@ export default function Navigation({title, sidebar = true, ...props}) {
     }
 
     let colClassName = userName && sidebar ? 'col s12 m12 l8 offset-l4 xl9 offset-xl3' : '';
-    let topNavStyles = userName && sidebar ? STYLES.topNav : {...STYLES.topNav, ...STYLES.topNavAuthenticated};
 
     return (
         <>
             <header>
-                <nav className='top-nav' style={topNavStyles}>
+                <nav className='top-nav' style={STYLES.topNav}>
                     <div className='row'>
                         <div className={colClassName}>
                             <div className='nav-wrapper'>
                                 <span className='brand-logo'>Store App</span>
                             </div>
                         </div>
-                        {userName &&
+                        {userName && sidebar &&
                             <div className='container'>
                                 <a href='#!' data-target='nav-mobile' className='top-nav sidenav-trigger full hide-on-large-only'>
                                     <i className='material-icons'>menu</i>
@@ -73,11 +74,11 @@ export default function Navigation({title, sidebar = true, ...props}) {
                 <div className='row'>
                     <div className={colClassName}>
                         <div className='container'>
-                        <div className='row'>
-                            <div className='col l12 m12 s12'>
-                                <h4 className='center'>{title}</h4>
+                            <div className='row'>
+                                <div className='col l12 m12 s12'>
+                                    <h4 className='center'>{title}</h4>
+                                </div>
                             </div>
-                        </div>
                         </div>
                         {props.children}
                     </div>
@@ -90,9 +91,6 @@ export default function Navigation({title, sidebar = true, ...props}) {
 const STYLES = {
     topNav: {
         backgroundColor: '#00675b'
-    },
-    topNavAuthenticated: {
-        paddingLeft: '2rem'
     },
     hiddenLoading: {
         opacity: 0
