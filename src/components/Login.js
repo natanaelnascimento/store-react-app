@@ -9,8 +9,8 @@ export default function Login() {
 
   const [username, setUsername] = useState([]);
   const [password, setPassword] = useState([]);
-  const [usernameClass, setUsernameClass] = useState(['valid']);
-  const [passwordClass, setPasswordClass] = useState(['valid']);
+  const [usernameClass, setUsernameClass] = useState([]);
+  const [passwordClass, setPasswordClass] = useState([]);
   const [userName, setUserName] = useContext(PageContext);
 
   const handleUsernameChange = (prop) => {

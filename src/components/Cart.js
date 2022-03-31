@@ -6,7 +6,6 @@ import CartManager from '../helpers/cartManager';
 import ProductService from '../services/ProductService';
 import ClientService from '../services/ClientService';
 import OrderService from '../services/OrderService';
-import CurrencyInput from 'react-currency-input-field';
 
 const currencyFormat = new Intl.NumberFormat('pt-BR', { style: "currency", currency: "BRL" });
 
@@ -291,15 +290,15 @@ export default function Cart() {
                 </div>
                 <div className='row'>
                   <div className='input-field col s12 m12 l4 xl4'>
-                    <CurrencyInput prefix='R$ ' style={STYLES.input} placeholder='Subtotal' id='subtotal' value={resume.subtotal} fixedDecimalLength='2' readOnly={true} />
+                    <input prefix='R$ ' style={STYLES.input} placeholder='Subtotal' id='subtotal' value={currencyFormat.format(resume.subtotal)} readOnly={true} />
                     <label className='active' htmlFor="subtotal">Subtotal</label>
                   </div>
                   <div className='input-field col s12 m12 l4 xl4'>
-                    <CurrencyInput prefix='R$ ' style={STYLES.input} placeholder='Desconto' id='discount' value={resume.discount} fixedDecimalLength='2' readOnly={true} />
+                    <input prefix='R$ ' style={STYLES.input} placeholder='Desconto' id='discount' value={currencyFormat.format(resume.discount)} readOnly={true} />
                     <label className='active' htmlFor="discount">Desconto</label>
                   </div>
                   <div className='input-field col s12 m12 l4 xl4'>
-                    <CurrencyInput prefix='R$ ' style={STYLES.input} placeholder='Valor Total' id='amount' value={resume.amount} fixedDecimalLength='2' readOnly={true} />
+                    <input prefix='R$ ' style={STYLES.input} placeholder='Valor Total' id='amount' value={currencyFormat.format(resume.amount)} readOnly={true} />
                     <label className='active' htmlFor="amount">Valor Total</label>
                   </div>
                 </div>

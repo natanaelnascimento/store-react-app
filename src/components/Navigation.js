@@ -64,6 +64,7 @@ export default function Navigation({title, sidebar = true, ...props}) {
                         <li><div className='divider'></div></li>
                         <li><Link to='/users'><i className='material-icons'>people</i>Usuários</Link></li>
                         <li><div className='divider'></div></li>
+                        <li><Link to='/password'><i className='material-icons'>lock</i>Alterar Senha</Link></li>
                         <li><a href='#!' onClick={handleLogoutClick}><i className='material-icons'>exit_to_app</i>Logout</a></li>
                     </ul>
                 }

@@ -249,7 +249,7 @@ export default function Clients() {
                   <label className='active' htmlFor="name">Nome</label>
                 </div>
                 <div className='input-field col s12 m12 l3 xl3'>
-                  <CurrencyInput prefix='R$ ' style={STYLES.input} className={creditLimitClass} placeholder='Limite de Crédito' id='creditLimit' value={creditLimit} fixedDecimalLength='2' onValueChange={handleCreditLimitChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <CurrencyInput prefix='R$ ' style={STYLES.input} className={creditLimitClass} placeholder='Limite de Crédito' id='creditLimit' value={creditLimit} fixedDecimalLength={2} decimalsLimit={2} onValueChange={handleCreditLimitChange} readOnly={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="creditLimit">Limite de Crédito</label>
                 </div>
                 <div className='input-field col s12 m12 l8 xl8'>

@@ -133,7 +133,6 @@ export default function Products() {
 
     data = await trackPromise(ProductService.findById(product.id));
     alertManager.handleData(data);
-    trackPromise(CartManager.updateProduct(data));
    
     data = await trackPromise(ProductService.findAll());
     alertManager.handleData(data);
@@ -161,8 +160,6 @@ export default function Products() {
     alertManager.handleData(data);
     if(!data.error)
       alertManager.showAlert('Produto excluído com sucesso!');
-
-    trackPromise(CartManager.removeProduct(current));
    
     data = await trackPromise(ProductService.findAll());
     alertManager.handleData(data);
@@ -257,7 +254,7 @@ export default function Products() {
                   <label className='active' htmlFor="name">Nome</label>
                 </div>
                 <div className='input-field col s12 m12 l3 xl3'>
-                  <CurrencyInput prefix='R$ ' style={STYLES.input} className={priceClass} placeholder='Preço' id='price' value={price} fixedDecimalLength='2' onValueChange={handlePriceChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <CurrencyInput prefix='R$ ' style={STYLES.input} className={priceClass} placeholder='Preço' id='price' value={price} fixedDecimalLength={2} decimalsLimit={2} onValueChange={handlePriceChange} readOnly={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="price">Preço</label>
                 </div>
                 <div className='input-field col s12 m12 l11 xl11'>

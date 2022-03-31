@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Cart from './components/Cart';
 import Clients from './components/Clients';
 import Login from './components/Login';
 import NotFound from './components/NotFound';
 import Panel from './components/Panel';
+import Password from './components/Password';
 import Products from './components/Products';
 import Users from './components/Users';
 import { PageContext } from './helpers/pageContext';
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/clients" element={<Clients />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/password" element={<Password />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>
     </PageContext.Provider>

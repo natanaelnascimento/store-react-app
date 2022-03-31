@@ -42,6 +42,14 @@ const ERRORS = [
     {
         error: 'outside_working_days',
         message: 'O pedido não pode ser realizado fora dos dias estabelecidos'
+    },
+    {
+        error: 'incorrect_password',
+        message: 'A senha atual informada está incorreta'
+    },
+    {
+        error: 'session_user_delete',
+        message: 'Você nãao pode excluir seu próprio usuário'
     }
 ];
 

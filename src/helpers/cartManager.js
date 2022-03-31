@@ -1,4 +1,5 @@
 import DiscountService from '../services/DiscountService';
+import ProductService from '../services/ProductService';
 
 const addProduct = async (product, quantity = 1) => {
     product.quantity = 0;
@@ -31,21 +32,28 @@ const removeProduct = async (product, quantity) => {
     window.sessionStorage.setItem('cart-products', products);
 }
 
-const updateProduct = async (product) => {
-    let products = window.sessionStorage.getItem('cart-products');
-    if(!products)
-        return;
-    products = await JSON.parse(products);
-    let cartProduct = await products.find(p => (p.id === product.id));
-    if(!cartProduct)
-        return;
-    await removeProduct(cartProduct);
-    await addProduct(product, cartProduct.quantity);
-}
-
 const getProducts = async () => {
     let products = window.sessionStorage.getItem('cart-products');
-    return !products ? [] : await JSON.parse(products);
+    if(!products)
+        return [];
+    products = await JSON.parse(products);
+
+    let updatedProducts = await products.map(async (p) => {
+        let product = await ProductService.findById(p.id);
+        if(!product.error) {
+            product.quantity = p.quantity;
+            return product;
+        }
+        return {};
+    });
+
+    updatedProducts = await Promise.all(updatedProducts);
+    updatedProducts = await updatedProducts.filter(p => p.id);
+
+    products = JSON.stringify(updatedProducts);
+    window.sessionStorage.setItem('cart-products', products);
+
+    return updatedProducts;
 }
 
 const removeAllProducts = () => {
@@ -64,6 +72,6 @@ const getResume = async (installments) => {
     return {subtotal, discount, amount};
 }
 
-const module = {addProduct, updateProduct, removeProduct, getProducts, getResume, removeAllProducts};
+const module = {addProduct, removeProduct, getProducts, getResume, removeAllProducts};
 
 export default module;
