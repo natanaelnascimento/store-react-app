@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Cart from './components/Cart';
 import Clients from './components/Clients';
+import Discounts from './components/Discounts';
 import Login from './components/Login';
 import NotFound from './components/NotFound';
 import Panel from './components/Panel';
@@ -28,9 +29,10 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/panel" element={<Panel />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/products" element={<Products />} />
           <Route path="/clients" element={<Clients />} />
-          <Route path="/cart" element={<Cart />} />
+          <Route path="/discounts" element={<Discounts />} />
           <Route path="/users" element={<Users />} />
           <Route path="/password" element={<Password />} />
           <Route path="/*" element={<NotFound />} />

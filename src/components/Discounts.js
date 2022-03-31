@@ -1,33 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import Navigation from './Navigation';
-import ClientService from '../services/ClientService';
+import DiscountService from '../services/DiscountService';
 import { trackPromise } from 'react-promise-tracker';
 import alertManager from '../helpers/alertManager';
 import CurrencyInput from 'react-currency-input-field';
 
-const currencyFormat = new Intl.NumberFormat('pt-BR', { style: "currency", currency: "BRL" });
-
-export default function Clients() {
+export default function Discounts() {
 
   const [items, setItems] = useState([]);
   const [viewType, setViewType] = useState([]);
   const [current, setCurrent] = useState([]);
   const [id, setId] = useState([]);
-  const [name, setName] = useState([]);
-  const [address, setAddress] = useState([]);
-  const [creditLimit, setCreditLimit] = useState([]);
+  const [description, setDescription] = useState([]);
+  const [percentage, setPercentage] = useState([]);
   const [installmentsLimit, setInstallmentsLimit] = useState([]);
-  const [nameClass, setNameClass] = useState([]);
-  const [addressClass, setAddressClass] = useState([]);
-  const [creditLimitClass, setCreditLimitClass] = useState([]);
+  const [descriptionClass, setDescriptionClass] = useState([]);
+  const [percentageClass, setPercentageClass] = useState([]);
   const [installmentsLimitClass, setInstallmentsLimitClass] = useState([]);
 
   useEffect(() => {
     setViewType('list');
     const fecth = async () => {
-      let data = await trackPromise(ClientService.findAll());
+      let data = await trackPromise(DiscountService.findAll());
       alertManager.handleData(data);
       setItems(data);
+      console.log(data);
     }
     fecth();
   }, []);
@@ -36,16 +33,22 @@ export default function Clients() {
     setId(props.target.value);
   }
 
-  const handleNameChange = (props) => {
-    setName(props.target.value);
+  const handleDescriptionChange = (props) => {
+    setDescription(props.target.value);
   }
 
-  const handleAddressChange = (props) => {
-    setAddress(props.target.value);
+  const handlePercentageChange = (value) => {
+    setPercentage(value);
   }
 
-  const handleCreditLimitChange = (value) => {
-    setCreditLimit(value);
+  const validatePercentage = (percentage) => {
+    percentage = parseFloat(percentage);
+    if(percentage <= 0 || percentage > 100) {
+      alertManager.showAlert('Informe um percentual válido');
+      setPercentageClass('invalid');
+      return false;
+    }
+    return true;
   }
 
   const handleInstallmentsLimitChange = (props) => {
@@ -53,11 +56,15 @@ export default function Clients() {
       setInstallmentsLimit(props.target.value);
   }
 
+  const formatDiscount = (value) => {
+    return Number(value).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:2})
+  }
+
   const handleSearchButtonClick = async () => {
-    let nameSearch = name.length > 0 ? name : null;
+    let descriptionSearch = description.length > 0 ? description : null;
     let data = id.length > 0
-      ? await trackPromise(ClientService.findById(id))
-      : await trackPromise(ClientService.findAll(nameSearch));
+      ? await trackPromise(DiscountService.findById(id))
+      : await trackPromise(DiscountService.findAll(descriptionSearch));
     alertManager.handleData(data);
     if(id.length > 0 && !data.error)
       data = {totalElements: 1, content: [data]}
@@ -65,47 +72,44 @@ export default function Clients() {
   }
 
   const handleCreationButtonClick = () => {
-    setName('');
     setId('');
-    setAddress('');
-    setCreditLimit('');
+    setDescription('');
+    setPercentage('');
     setInstallmentsLimit('');
     setCurrent(null);
     setViewType('creation');
   }
 
   const handleCancelButtonClick = () => {
-    setName('');
     setId('');
-    setAddress('');
-    setCreditLimit('');
+    setDescription('');
+    setPercentage('');
     setInstallmentsLimit('');
-    setNameClass('');
-    setAddressClass('');
-    setCreditLimitClass('');
+    setDescriptionClass('');
+    setPercentageClass('');
     setInstallmentsLimitClass('');
     setCurrent(null);
     setViewType('list');
   }
 
   const handleCreationConffirmButtonClick = async () => {
-    setNameClass(name.length === 0 ? 'invalid' : 'valid');
-    setCreditLimitClass(creditLimit.length === 0 ? 'invalid' : 'valid');
+    setPercentageClass(percentage.length === 0 ? 'invalid' : 'valid');
     setInstallmentsLimitClass(installmentsLimit.length === 0 ? 'invalid' : 'valid');
-    setAddressClass(address.length === 0 ? 'invalid' : 'valid');
-    if(name.length === 0 || creditLimit.length === 0 || address.length === 0 || installmentsLimit.length === 0) {
+    setDescriptionClass(description.length === 0 ? 'invalid' : 'valid');
+    if(installmentsLimit.length === 0 || percentage.length === 0 || description.length === 0) {
       alertManager.showAlert('Preencha os campos obrigatórios!');
       return;
     }
-
-    let creditLimitValue = creditLimit.replace('.', '').replace(',', '.');
-    let client = {name, address, installmentsLimit, creditLimit: creditLimitValue};
-    let data = await trackPromise(ClientService.create(client));
+    let percentageValue = parseFloat(percentage.replace('.', '').replace(',', '.'));
+    if(!validatePercentage(percentageValue))
+      return;
+    let discount = {description, installmentsLimit, percentage : (percentageValue/100.0)};
+    let data = await trackPromise(DiscountService.create(discount));
     alertManager.handleData(data);
     if(!data.error)
-      alertManager.showAlert('Cliente cadastrado com sucesso!');
+      alertManager.showAlert('Desconto cadastrado com sucesso!');
    
-    data = await trackPromise(ClientService.findAll());
+    data = await trackPromise(DiscountService.findAll());
     alertManager.handleData(data);
     setItems(data);
 
@@ -114,37 +118,37 @@ export default function Clients() {
 
   const handleUpdateButtonClick = async (props) => {
     let id = props.target.id.split('-')[1];
-    let data = await trackPromise(ClientService.findById(id));
+    let data = await trackPromise(DiscountService.findById(id));
     alertManager.handleData(data);
     if(data.error)
       return;
-    setName(data.name);
     setId(data.id);
-    setAddress(data.address);
-    setCreditLimit(data.creditLimit  + '');
+    setDescription(data.description);
+    setPercentage((data.percentage*100.0).toFixed(2));
     setInstallmentsLimit(data.installmentsLimit);
     setCurrent(data);
     setViewType('update');
   }
 
   const handleUpdateConffirmButtonClick = async () => {
-    setNameClass(name.length === 0 ? 'invalid' : 'valid');
-    setCreditLimitClass(creditLimit.length === 0 ? 'invalid' : 'valid');
+    setPercentageClass(percentage.length === 0 ? 'invalid' : 'valid');
     setInstallmentsLimitClass(installmentsLimit.length === 0 ? 'invalid' : 'valid');
-    setAddressClass(address.length === 0 ? 'invalid' : 'valid');
-    if(name.length === 0 || creditLimit.length === 0 || address.length === 0 || installmentsLimit.length === 0) {
+    setDescriptionClass(description.length === 0 ? 'invalid' : 'valid');
+    if(installmentsLimit.length === 0 || percentage.length === 0 || description.length === 0) {
       alertManager.showAlert('Preencha os campos obrigatórios!');
       return;
     }
-
-    let creditLimitValue = creditLimit.replace('.', '').replace(',', '.');
-    let client = {name, address, installmentsLimit, creditLimit: creditLimitValue, id : current.id};
-    let data = await trackPromise(ClientService.update(client));
+    let percentageValue = parseFloat(percentage.replace('.', '').replace(',', '.'));
+    if(!validatePercentage(percentageValue))
+      return;
+    let discount = {description, installmentsLimit, percentage : (percentageValue/100.0), id : current.id};
+    console.log(discount);
+    let data = await trackPromise(DiscountService.update(discount));
     alertManager.handleData(data);
     if(!data.error)
-      alertManager.showAlert('Cliente alterado com sucesso!');
+      alertManager.showAlert('Desconto alterado com sucesso!');
    
-    data = await trackPromise(ClientService.findAll());
+    data = await trackPromise(DiscountService.findAll());
     alertManager.handleData(data);
     setItems(data);
 
@@ -153,26 +157,25 @@ export default function Clients() {
 
   const handleDeleteButtonClick = async (props) => {
     let id = props.target.id.split('-')[1];
-    let data = await trackPromise(ClientService.findById(id));
+    let data = await trackPromise(DiscountService.findById(id));
     alertManager.handleData(data);
     if(data.error)
       return;
-    setName(data.name);
     setId(data.id);
-    setAddress(data.address);
-    setCreditLimit(data.creditLimit + '');
+    setDescription(data.description);
+    setPercentage((data.percentage*100.0).toFixed(2));
     setInstallmentsLimit(data.installmentsLimit);
     setCurrent(data);
     setViewType('delete');
   }
 
   const handleDeleteConffirmButtonClick = async () => {
-    let data = await trackPromise(ClientService.remove(current.id));
+    let data = await trackPromise(DiscountService.remove(current.id));
     alertManager.handleData(data);
     if(!data.error)
-      alertManager.showAlert('Cliente excluído com sucesso!');
+      alertManager.showAlert('Desconto excluído com sucesso!');
    
-    data = await trackPromise(ClientService.findAll());
+    data = await trackPromise(DiscountService.findAll());
     alertManager.handleData(data);
     setItems(data);
 
@@ -181,35 +184,34 @@ export default function Clients() {
 
   const handleDetailButtonClick = async (props) => {
     let id = props.target.id.split('-')[1];
-    let data = await trackPromise(ClientService.findById(id));
+    let data = await trackPromise(DiscountService.findById(id));
     alertManager.handleData(data);
     if(data.error)
       return;
-    setName(data.name);
     setId(data.id);
-    setAddress(data.address);
-    setCreditLimit(data.creditLimit + '');
+    setDescription(data.description);
+    setPercentage((data.percentage*100.0).toFixed(2));
     setInstallmentsLimit(data.installmentsLimit);
     setCurrent(data);
     setViewType('detail');
   }
 
   let title = viewType === 'update'
-    ? `Alterar Cliente #${current && current.id}`
+    ? `Alterar Desconto #${current && current.id}`
     : viewType === 'delete'
-    ? `Excluir Cliente #${current && current.id}`
+    ? `Excluir Desconto #${current && current.id}`
     : viewType === 'detail'
-    ? `Detalhar Cliente #${current && current.id}`
+    ? `Detalhar Desconto #${current && current.id}`
     : viewType === 'creation'
-    ? 'Cadastrar Cliente'
-    : 'Clientes';
+    ? 'Cadastrar Desconto'
+    : 'Descontos';
 
   return (
     <Navigation title={title}>
         {viewType === 'list' &&
           <div className='section'>
             <input style={STYLES.input} className='col s12 m12 l1 xl2' placeholder='Buscar por ID' id='id' type='text' value={id} onChange={handleIdChange} />
-            <input style={STYLES.input} className='col s12 m12 l5 xl6' placeholder='Buscar por Nome' id='name' type='text' value={name} onChange={handleNameChange} />
+            <input style={STYLES.input} className='col s12 m12 l5 xl6' placeholder='Buscar por Descrição' id='description' type='text' value={description} onChange={handleDescriptionChange} />
             <button style={STYLES.input} onClick={handleSearchButtonClick} className='center btn waves-effect waves-light'><i className="material-icons left">search</i>Buscar</button>
             <button style={STYLES.input} onClick={handleCreationButtonClick} className='center btn waves-effect waves-light'><i className="material-icons left">add</i>Cadastrar</button>
           </div>
@@ -221,21 +223,21 @@ export default function Clients() {
                 <tr>
                   <th>#ID</th>
                   <th>Nome</th>
-                  <th>Limite de Crédito</th>
+                  <th>Desconto</th>
                 </tr>
               </thead>
               <tbody>
               {items && items.totalElements > 0 &&
-                items.content.map((client) => (
-                  <tr key={client.id}>
-                    <td>{client.id}</td>
-                    <td>{client.name}</td>
-                    <td>{currencyFormat.format(client.creditLimit)}</td>
+                items.content.map((discount) => (
+                  <tr key={discount.id}>
+                    <td>{discount.id}</td>
+                    <td>{discount.description}</td>
+                    <td>{formatDiscount(discount.percentage)}</td>
                     <td/>
                     <td>
-                      <a href='#!' id={'aclient-' + client.id} onClick={handleDeleteButtonClick} className='secondary-content'><i id={'iclient-' + client.id} style={STYLES.action} className='material-icons'>delete</i></a>
-                      <a href='#!' id={'aclient-' + client.id} onClick={handleUpdateButtonClick} className='secondary-content'><i id={'iclient-' + client.id} style={STYLES.action} className='material-icons'>edit</i></a>
-                      <a href='#!' id={'aclient-' + client.id} onClick={handleDetailButtonClick} className='secondary-content'><i id={'iclient-' + client.id} style={STYLES.action} className='material-icons'>description</i></a>
+                      <a href='#!' id={'adiscount-' + discount.id} onClick={handleDeleteButtonClick} className='secondary-content'><i id={'idiscount-' + discount.id} style={STYLES.action} className='material-icons'>delete</i></a>
+                      <a href='#!' id={'adiscount-' + discount.id} onClick={handleUpdateButtonClick} className='secondary-content'><i id={'idiscount-' + discount.id} style={STYLES.action} className='material-icons'>edit</i></a>
+                      <a href='#!' id={'adiscount-' + discount.id} onClick={handleDetailButtonClick} className='secondary-content'><i id={'idiscount-' + discount.id} style={STYLES.action} className='material-icons'>description</i></a>
                     </td>
                   </tr>
                 ))}
@@ -245,21 +247,17 @@ export default function Clients() {
           {viewType !== 'list' &&
             <>
               <div>
-                <div className='input-field col s12 m12 l8 xl8'>
-                  <input style={STYLES.input} className={nameClass} placeholder='Nome' id='name' type='text' value={name} onChange={handleNameChange} readOnly={['detail', 'delete'].includes(viewType)} />
-                  <label className='active' htmlFor="name">Nome</label>
+                <div className='input-field col s12 m12 l10 xl11'>
+                  <input style={STYLES.input} className={descriptionClass} placeholder='Descrição' id='description' type='text' value={description} onChange={handleDescriptionChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <label className='active' htmlFor="descriptions">Descrição</label>
                 </div>
-                <div className='input-field col s12 m12 l3 xl3'>
-                  <CurrencyInput prefix='R$ ' style={STYLES.input} className={creditLimitClass} placeholder='Limite de Crédito' id='creditLimit' value={creditLimit} decimalScale={2} fixedDecimalLength={2} onValueChange={handleCreditLimitChange} readOnly={['detail', 'delete'].includes(viewType)} />
-                  <label className='active' htmlFor="creditLimit">Limite de Crédito</label>
-                </div>
-                <div className='input-field col s12 m12 l8 xl8'>
-                  <input style={STYLES.input} className={addressClass} placeholder='Endereço' id='address' type='text' value={address} onChange={handleAddressChange} readOnly={['detail', 'delete'].includes(viewType)} />
-                  <label className='active' htmlFor="addresss">Endereço</label>
-                </div>
-                <div className='input-field col s12 m12 l3 xl3'>
+                <div className='input-field col s12 m12 l5 xl5'>
                   <input style={STYLES.input} className={installmentsLimitClass} placeholder='Limite de Parcelas' id='installmentsLimit' type='number' min='1' value={installmentsLimit} onChange={handleInstallmentsLimitChange} readOnly={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="installmentsLimit">Limite de Parcelas</label>
+                </div>
+                <div className='input-field col s12 m12 l5 xl6'>
+                  <CurrencyInput suffix='%' style={STYLES.input} className={percentageClass} placeholder='Desconto' id='percentage' value={percentage} decimalScale={2} fixedDecimalLength={2} onValueChange={handlePercentageChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <label className='active' htmlFor="percentage">Desconto</label>
                 </div>
               </div>
               <div>

@@ -87,8 +87,8 @@ export default function Products() {
       alertManager.showAlert('Preencha os campos obrigatórios!');
       return;
     }
-    let priceValue = price.replace(',', '.');
-    let product = {name, description, price : priceValue};
+    let priceValue = price.replace('.', '').replace(',', '.');
+    let product = {name, description, price: priceValue};
     let data = await trackPromise(ProductService.create(product));
     alertManager.handleData(data);
     if(!data.error)
@@ -124,8 +124,8 @@ export default function Products() {
       return;
     }
 
-    let priceValue = price.replace(',', '.');
-    let product = {name, description, price : priceValue, id : current.id};
+    let priceValue = price.replace('.', '').replace(',', '.');
+    let product = {name, description, price: priceValue, id : current.id};
     let data = await trackPromise(ProductService.update(product));
     alertManager.handleData(data);
     if(!data.error)
@@ -208,7 +208,6 @@ export default function Products() {
 
   return (
     <Navigation title={title}>
-        
         {viewType === 'list' &&
           <div className='section'>
             <input style={STYLES.input} className='col s12 m12 l1 xl2' placeholder='Buscar por ID' id='id' type='text' value={id} onChange={handleIdChange} />
@@ -254,7 +253,7 @@ export default function Products() {
                   <label className='active' htmlFor="name">Nome</label>
                 </div>
                 <div className='input-field col s12 m12 l3 xl3'>
-                  <CurrencyInput prefix='R$ ' style={STYLES.input} className={priceClass} placeholder='Preço' id='price' value={price} fixedDecimalLength={2} decimalsLimit={2} onValueChange={handlePriceChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <CurrencyInput prefix='R$ ' style={STYLES.input} className={priceClass} placeholder='Preço' id='price' value={price} decimalScale={2} fixedDecimalLength={2} onValueChange={handlePriceChange} readOnly={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="price">Preço</label>
                 </div>
                 <div className='input-field col s12 m12 l11 xl11'>

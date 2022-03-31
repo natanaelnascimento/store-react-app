@@ -26,6 +26,7 @@ export default function Navigation({title, sidebar = true, ...props}) {
     }
 
     let colClassName = userName && sidebar ? 'col s12 m12 l8 offset-l4 xl9 offset-xl3' : '';
+    let topNavTextClassName = userName && sidebar ? 'brand-logo' : 'brand-logo center';
 
     return (
         <>
@@ -34,7 +35,7 @@ export default function Navigation({title, sidebar = true, ...props}) {
                     <div className='row'>
                         <div className={colClassName}>
                             <div className='nav-wrapper'>
-                                <span className='brand-logo'>Store App</span>
+                                <span className={topNavTextClassName}>Store App</span>
                             </div>
                         </div>
                         {userName && sidebar &&
@@ -59,9 +60,10 @@ export default function Navigation({title, sidebar = true, ...props}) {
                         </li>
                         <li><div className='divider'></div></li>
                         <li><Link to='/panel'><i className='material-icons'>equalizer</i>Painel</Link></li>
+                        <li><Link to='/cart'><i className='material-icons'>shopping_cart</i>Carrinho</Link></li>
                         <li><Link to='/products'><i className='material-icons'>local_mall</i>Produtos</Link></li>
                         <li><Link to='/clients'><i className='material-icons'>face</i>Clientes</Link></li>
-                        <li><Link to='/cart'><i className='material-icons'>shopping_cart</i>Carrinho</Link></li>
+                        <li><Link to='/discounts'><i className='material-icons'>money_off</i>Descontos</Link></li>
                         <li><div className='divider'></div></li>
                         <li><Link to='/users'><i className='material-icons'>people</i>Usuários</Link></li>
                         <li><div className='divider'></div></li>

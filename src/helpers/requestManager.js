@@ -2,6 +2,7 @@ import http from './httpCommon';
 import {getConfig} from '../helpers/httpCommon';
 import AuthenticationService from '../services/AuthenticationService';
 import ErrorInfo from './errorInfo';
+import TokenManager from './tokenManager';
 
 const call = async (method, url, data, quantity = 1000000) => {
     if(method === 'get')
@@ -22,6 +23,7 @@ const call = async (method, url, data, quantity = 1000000) => {
                     : await http[method](url, getConfig(auth));
                 return response.data;
             } catch (error) {
+                TokenManager.cleanTokens();
                 let errorInfo = ErrorInfo.getErrorInfo(error.response);
                 if(errorInfo.error === 'bad_credentials' && window.location.pathname !== '/' && window.location.pathname !== '')
                     window.location.pathname = '/';

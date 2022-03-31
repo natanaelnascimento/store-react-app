@@ -234,7 +234,6 @@ export default function Users() {
 
   return (
     <Navigation title={title}>
-        
         {viewType === 'list' &&
           <div className='section'>
             <input style={STYLES.input} className='col s12 m12 l1 xl2' placeholder='Buscar por ID' id='id' type='text' value={id} onChange={handleIdChange} />
