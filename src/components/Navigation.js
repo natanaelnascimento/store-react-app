@@ -8,7 +8,7 @@ import AuthenticationService from '../services/AuthenticationService';
 export default function Navigation({title, sidebar = true, ...props}) {
 
     const { promiseInProgress } = usePromiseTracker();
-    const [userName, setSessionId] = useContext(PageContext);
+    const [userName, setUsername] = useContext(PageContext);
 
     useEffect(() => {
         let elems = document.querySelectorAll('.sidenav');
@@ -17,7 +17,7 @@ export default function Navigation({title, sidebar = true, ...props}) {
 
     const handleLogoutClick = async () => {
         await trackPromise(AuthenticationService.logout());
-        setSessionId('');
+        setUsername('');
         return (
             <Navigate to='/'/>
         );

@@ -17,7 +17,7 @@ export default function App() {
 
   useEffect(() => {
     let auth = AuthenticationService.getAuth();
-    setUserName(auth.userName ? auth.userName : null);
+    setUserName(auth.userName ? auth.userName : '');
     if(userName && userName.length > 0 && (window.location.pathname === '/' || window.location.pathname === ''))
       window.location.pathname = '/panel';
   },[userName]);
