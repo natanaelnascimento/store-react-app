@@ -259,7 +259,6 @@ export default function Users() {
                     <td>{user.id}</td>
                     <td>{user.name}</td>
                     <td>{user.username}</td>
-                    <td/>
                     <td>
                       <a href='#!' id={'auser-' + user.id} onClick={handleDeleteButtonClick} className='secondary-content'><i id={'iuser-' + user.id} style={STYLES.action} className='material-icons'>delete</i></a>
                       <a href='#!' id={'auser-' + user.id} onClick={handleUpdateButtonClick} className='secondary-content'><i id={'iuser-' + user.id} style={STYLES.action} className='material-icons'>edit</i></a>
@@ -274,21 +273,21 @@ export default function Users() {
             <>
               <div>
                 <div className='input-field col s12 m12 l8 xl8'>
-                  <input style={STYLES.input} className={nameClass} placeholder='Nome' id='name' type='text' value={name} onChange={handleNameChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <input style={STYLES.input} className={nameClass} placeholder='Nome' id='name' type='text' value={name} onChange={handleNameChange} disabled={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="name">Nome</label>
                 </div>
                 <div className='input-field col s12 m12 l3 xl3'>
-                <input style={STYLES.input} className={usernameClass} placeholder='Login' id='username' type='text' value={username} onChange={handleUsernameChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                <input style={STYLES.input} className={usernameClass} placeholder='Login' id='username' type='text' value={username} onChange={handleUsernameChange} disabled={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="unsername">Login</label>
                 </div>
                 {viewType === 'creation' &&
                 <>
                   <div className='input-field col s12 m12 l6 xl6'>
-                    <input style={STYLES.input} className={passwordClass} placeholder='Senha' id='password' type='password' value={password} onChange={handlePasswordChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                    <input style={STYLES.input} className={passwordClass} placeholder='Senha' id='password' type='password' value={password} onChange={handlePasswordChange} disabled={['detail', 'delete'].includes(viewType)} />
                     <label className='active' htmlFor="password">Senha</label>
                   </div>
                   <div className='input-field col s12 m12 l5 xl5'>
-                    <input style={STYLES.input} className={passwordConfirmationClass} placeholder='Confirmação da Senha' id='passwordConfirmation' type='password' value={passwordConfirmation} onChange={handlePasswordConfirmationChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                    <input style={STYLES.input} className={passwordConfirmationClass} placeholder='Confirmação da Senha' id='passwordConfirmation' type='password' value={passwordConfirmation} onChange={handlePasswordConfirmationChange} disabled={['detail', 'delete'].includes(viewType)} />
                     <label className='active' htmlFor="passwordConfirmation">Confirmação da Senha</label>
                   </div>
                 </>

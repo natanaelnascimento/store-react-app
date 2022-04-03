@@ -233,7 +233,6 @@ export default function Products() {
                     <td>{product.id}</td>
                     <td>{product.name}</td>
                     <td>{currencyFormat.format(product.price)}</td>
-                    <td/>
                     <td>
                       <a href='#!' id={'aproduct-' + product.id} onClick={handleCartButtonClick} className='secondary-content'><i id={'iproduct-' + product.id} style={STYLES.action} className='material-icons'>add_shopping_cart</i></a>
                       <a href='#!' id={'aproduct-' + product.id} onClick={handleDeleteButtonClick} className='secondary-content'><i id={'iproduct-' + product.id} style={STYLES.action} className='material-icons'>delete</i></a>
@@ -249,15 +248,15 @@ export default function Products() {
             <>
               <div>
                 <div className='input-field col s12 m12 l8 xl8'>
-                  <input style={STYLES.input} className={nameClass} placeholder='Nome' id='name' type='text' value={name} onChange={handleNameChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <input style={STYLES.input} className={nameClass} placeholder='Nome' id='name' type='text' value={name} onChange={handleNameChange} disabled={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="name">Nome</label>
                 </div>
                 <div className='input-field col s12 m12 l3 xl3'>
-                  <CurrencyInput prefix='R$ ' style={STYLES.input} className={priceClass} placeholder='Preço' id='price' value={price} decimalScale={2} fixedDecimalLength={2} onValueChange={handlePriceChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <CurrencyInput prefix='R$ ' style={STYLES.input} className={priceClass} placeholder='Preço' id='price' value={price} decimalScale={2} fixedDecimalLength={2} onValueChange={handlePriceChange} disabled={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="price">Preço</label>
                 </div>
                 <div className='input-field col s12 m12 l11 xl11'>
-                  <input style={STYLES.input} className={descriptionClass} placeholder='Descrição' id='description' type='text' value={description} onChange={handleDescriptionChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <input style={STYLES.input} className={descriptionClass} placeholder='Descrição' id='description' type='text' value={description} onChange={handleDescriptionChange} disabled={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="description">Descrição</label>
                 </div>
               </div>

@@ -290,15 +290,15 @@ export default function Cart() {
                 </div>
                 <div className='row'>
                   <div className='input-field col s12 m12 l4 xl4'>
-                    <input prefix='R$ ' style={STYLES.input} placeholder='Subtotal' id='subtotal' value={currencyFormat.format(resume.subtotal)} readOnly={true} />
+                    <input prefix='R$ ' style={STYLES.input} placeholder='Subtotal' id='subtotal' value={currencyFormat.format(resume.subtotal)} disabled={true} />
                     <label className='active' htmlFor="subtotal">Subtotal</label>
                   </div>
                   <div className='input-field col s12 m12 l4 xl4'>
-                    <input prefix='R$ ' style={STYLES.input} placeholder='Desconto' id='discount' value={currencyFormat.format(resume.discount)} readOnly={true} />
+                    <input prefix='R$ ' style={STYLES.input} placeholder='Desconto' id='discount' value={currencyFormat.format(resume.discount)} disabled={true} />
                     <label className='active' htmlFor="discount">Desconto</label>
                   </div>
                   <div className='input-field col s12 m12 l4 xl4'>
-                    <input prefix='R$ ' style={STYLES.input} placeholder='Valor Total' id='amount' value={currencyFormat.format(resume.amount)} readOnly={true} />
+                    <input prefix='R$ ' style={STYLES.input} placeholder='Valor Total' id='amount' value={currencyFormat.format(resume.amount)} disabled={true} />
                     <label className='active' htmlFor="amount">Valor Total</label>
                   </div>
                 </div>

@@ -24,7 +24,6 @@ export default function Discounts() {
       let data = await trackPromise(DiscountService.findAll());
       alertManager.handleData(data);
       setItems(data);
-      console.log(data);
     }
     fecth();
   }, []);
@@ -142,7 +141,6 @@ export default function Discounts() {
     if(!validatePercentage(percentageValue))
       return;
     let discount = {description, installmentsLimit, percentage : (percentageValue/100.0), id : current.id};
-    console.log(discount);
     let data = await trackPromise(DiscountService.update(discount));
     alertManager.handleData(data);
     if(!data.error)
@@ -233,7 +231,6 @@ export default function Discounts() {
                     <td>{discount.id}</td>
                     <td>{discount.description}</td>
                     <td>{formatDiscount(discount.percentage)}</td>
-                    <td/>
                     <td>
                       <a href='#!' id={'adiscount-' + discount.id} onClick={handleDeleteButtonClick} className='secondary-content'><i id={'idiscount-' + discount.id} style={STYLES.action} className='material-icons'>delete</i></a>
                       <a href='#!' id={'adiscount-' + discount.id} onClick={handleUpdateButtonClick} className='secondary-content'><i id={'idiscount-' + discount.id} style={STYLES.action} className='material-icons'>edit</i></a>
@@ -248,15 +245,15 @@ export default function Discounts() {
             <>
               <div>
                 <div className='input-field col s12 m12 l10 xl11'>
-                  <input style={STYLES.input} className={descriptionClass} placeholder='Descrição' id='description' type='text' value={description} onChange={handleDescriptionChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <input style={STYLES.input} className={descriptionClass} placeholder='Descrição' id='description' type='text' value={description} onChange={handleDescriptionChange} disabled={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="descriptions">Descrição</label>
                 </div>
                 <div className='input-field col s12 m12 l5 xl5'>
-                  <input style={STYLES.input} className={installmentsLimitClass} placeholder='Limite de Parcelas' id='installmentsLimit' type='number' min='1' value={installmentsLimit} onChange={handleInstallmentsLimitChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <input style={STYLES.input} className={installmentsLimitClass} placeholder='Limite de Parcelas' id='installmentsLimit' type='number' min='1' value={installmentsLimit} onChange={handleInstallmentsLimitChange} disabled={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="installmentsLimit">Limite de Parcelas</label>
                 </div>
                 <div className='input-field col s12 m12 l5 xl6'>
-                  <CurrencyInput suffix='%' style={STYLES.input} className={percentageClass} placeholder='Desconto' id='percentage' value={percentage} decimalScale={2} fixedDecimalLength={2} onValueChange={handlePercentageChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <CurrencyInput suffix='%' style={STYLES.input} className={percentageClass} placeholder='Desconto' id='percentage' value={percentage} decimalScale={2} fixedDecimalLength={2} onValueChange={handlePercentageChange} disabled={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="percentage">Desconto</label>
                 </div>
               </div>

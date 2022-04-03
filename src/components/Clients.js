@@ -231,7 +231,6 @@ export default function Clients() {
                     <td>{client.id}</td>
                     <td>{client.name}</td>
                     <td>{currencyFormat.format(client.creditLimit)}</td>
-                    <td/>
                     <td>
                       <a href='#!' id={'aclient-' + client.id} onClick={handleDeleteButtonClick} className='secondary-content'><i id={'iclient-' + client.id} style={STYLES.action} className='material-icons'>delete</i></a>
                       <a href='#!' id={'aclient-' + client.id} onClick={handleUpdateButtonClick} className='secondary-content'><i id={'iclient-' + client.id} style={STYLES.action} className='material-icons'>edit</i></a>
@@ -246,19 +245,19 @@ export default function Clients() {
             <>
               <div>
                 <div className='input-field col s12 m12 l8 xl8'>
-                  <input style={STYLES.input} className={nameClass} placeholder='Nome' id='name' type='text' value={name} onChange={handleNameChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <input style={STYLES.input} className={nameClass} placeholder='Nome' id='name' type='text' value={name} onChange={handleNameChange} disabled={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="name">Nome</label>
                 </div>
                 <div className='input-field col s12 m12 l3 xl3'>
-                  <CurrencyInput prefix='R$ ' style={STYLES.input} className={creditLimitClass} placeholder='Limite de Crédito' id='creditLimit' value={creditLimit} decimalScale={2} fixedDecimalLength={2} onValueChange={handleCreditLimitChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <CurrencyInput prefix='R$ ' style={STYLES.input} className={creditLimitClass} placeholder='Limite de Crédito' id='creditLimit' value={creditLimit} decimalScale={2} fixedDecimalLength={2} onValueChange={handleCreditLimitChange} disabled={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="creditLimit">Limite de Crédito</label>
                 </div>
                 <div className='input-field col s12 m12 l8 xl8'>
-                  <input style={STYLES.input} className={addressClass} placeholder='Endereço' id='address' type='text' value={address} onChange={handleAddressChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <input style={STYLES.input} className={addressClass} placeholder='Endereço' id='address' type='text' value={address} onChange={handleAddressChange} disabled={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="addresss">Endereço</label>
                 </div>
                 <div className='input-field col s12 m12 l3 xl3'>
-                  <input style={STYLES.input} className={installmentsLimitClass} placeholder='Limite de Parcelas' id='installmentsLimit' type='number' min='1' value={installmentsLimit} onChange={handleInstallmentsLimitChange} readOnly={['detail', 'delete'].includes(viewType)} />
+                  <input style={STYLES.input} className={installmentsLimitClass} placeholder='Limite de Parcelas' id='installmentsLimit' type='number' min='1' value={installmentsLimit} onChange={handleInstallmentsLimitChange} disabled={['detail', 'delete'].includes(viewType)} />
                   <label className='active' htmlFor="installmentsLimit">Limite de Parcelas</label>
                 </div>
               </div>

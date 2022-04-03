@@ -79,7 +79,7 @@ export default function Password() {
           </div>
           <div className='row'>
                 <div className='col s10 m6 l4 offset-s1 offset-m3 offset-l4'>
-                    <input className={newPasswordClass} placeholder='Nova nenha' id='newPassword' type='password' value={newPassword} onChange={handleNewPasswordChange} />
+                    <input className={newPasswordClass} placeholder='Nova senha' id='newPassword' type='password' value={newPassword} onChange={handleNewPasswordChange} />
                 </div>
           </div>
           <div className='row'>
