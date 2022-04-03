@@ -8,6 +8,18 @@ const findById = async (id) => {
     return await RequestManager.call(`get`, `/v1/orders/` + id);
 }
 
+const findByUser = async (userId, quantity) => {
+    return await RequestManager.call(`get`, `/v1/orders/byUser/` + userId, null, quantity);
+}
+
+const findByClient = async (clientId, quantity) => {
+    return await RequestManager.call(`get`, `/v1/orders/byClient/` + clientId, null, quantity);
+}
+
+const findByProduct = async (productId, quantity) => {
+    return await RequestManager.call(`get`, `/v1/orders/byProduct/` + productId, null, quantity);
+}
+
 const findAll = async (quantity) => {
     return await RequestManager.call(`get`, `/v1/orders`, null, quantity);
 }
@@ -20,6 +32,6 @@ const remove = async (id) => {
     return await RequestManager.call(`delete`, `/v1/orders/` + id);
 }
 
-const module = { create, findById, findAll, update, remove }
+const module = { create, findById, findByUser, findByClient, findByProduct, findAll, update, remove }
 
 export default module;

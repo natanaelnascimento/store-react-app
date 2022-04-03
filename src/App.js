@@ -6,6 +6,7 @@ import Discounts from './components/Discounts';
 import Login from './components/Login';
 import NotFound from './components/NotFound';
 import OfficeHours from './components/OfficeHours';
+import Orders from './components/Orders';
 import Panel from './components/Panel';
 import Password from './components/Password';
 import Products from './components/Products';
@@ -33,9 +34,10 @@ export default function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/products" element={<Products />} />
           <Route path="/clients" element={<Clients />} />
+          <Route path="/orders" element={<Orders />} />
           <Route path="/discounts" element={<Discounts />} />
-          <Route path="/users" element={<Users />} />
           <Route path="/officeHours" element={<OfficeHours />} />
+          <Route path="/users" element={<Users />} />
           <Route path="/password" element={<Password />} />
           <Route path="/*" element={<NotFound />} />
         </Routes>

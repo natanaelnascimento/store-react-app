@@ -60,14 +60,14 @@ export default function Navigation({title, sidebar = true, ...props}) {
                         </li>
                         <li><div className='divider'></div></li>
                         <li><Link to='/panel'><i className='material-icons'>equalizer</i>Painel</Link></li>
-                        <li><div className='divider'></div></li>
                         <li><Link to='/cart'><i className='material-icons'>shopping_cart</i>Carrinho</Link></li>
                         <li><Link to='/products'><i className='material-icons'>local_mall</i>Produtos</Link></li>
                         <li><Link to='/clients'><i className='material-icons'>face</i>Clientes</Link></li>
-                        <li><Link to='/discounts'><i className='material-icons'>money_off</i>Descontos</Link></li>
+                        <li><Link to='/orders'><i className='material-icons'>receipt</i>Pedidos</Link></li>
                         <li><div className='divider'></div></li>
-                        <li><Link to='/users'><i className='material-icons'>people</i>Usuários</Link></li>
+                        <li><Link to='/discounts'><i className='material-icons'>money_off</i>Descontos</Link></li>
                         <li><Link to='/officeHours'><i className='material-icons'>access_time</i>Expediente</Link></li>
+                        <li><Link to='/users'><i className='material-icons'>people</i>Usuários</Link></li>
                         <li><div className='divider'></div></li>
                         <li><Link to='/password'><i className='material-icons'>lock</i>Alterar Senha</Link></li>
                         <li><a href='#!' onClick={handleLogoutClick}><i className='material-icons'>exit_to_app</i>Logout</a></li>
